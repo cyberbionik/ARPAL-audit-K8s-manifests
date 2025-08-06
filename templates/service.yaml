@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: audit-ms
+  labels:
+    app: audit-ms
+  {{- include "audit-ms.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.type }}
+  selector:
+    app: audit-ms
+    {{- include "audit-ms.selectorLabels" . | nindent 4 }}
+  ports:
+  {{- .Values.ports | toYaml | nindent 2 }}

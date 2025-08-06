@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: audit-ms
+  labels:
+    app: audit-ms
+  {{- include "audit-ms.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: audit-ms
+    {{- include "audit-ms.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: audit-ms
+      {{- include "audit-ms.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - env:
+        - name: ARPAL_JWT_RSA_PUBLIC_KEY
+          valueFrom:
+            secretKeyRef:
+              key: public-key.pem
+              name: arpal-keys-security-secret
+        - name: SERVER_PORT
+          value: {{ quote .Values.env.serverPort
+            }}
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        envFrom:
+        - configMapRef:
+            name: arpal-db-configmap
+        - configMapRef:
+            name: arpal-elk-configmap    
+        - secretRef:
+            name: arpal-db-secret
+        - configMapRef:
+            name: redis-configmap
+        - configMapRef:
+            name: arpal-activemq-configmap
+        image: '{{ .Values.image.repository
+          }}:{{ .Values.image.tag | default
+          .Chart.AppVersion }}'
+        imagePullPolicy: {{ .Values.imagePullPolicy
+          }}
+        livenessProbe:
+          failureThreshold: 10
+          httpGet:
+            path: /actuator/health/liveness
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        name: audit-ms
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          failureThreshold: 10
+          httpGet:
+            path: /actuator/health/readiness
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 5
+        resources: {{- toYaml .Values.resources
+          | nindent 10 }}
