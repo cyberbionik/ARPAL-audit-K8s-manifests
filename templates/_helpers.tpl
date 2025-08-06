@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "accreditamento-ms.name" -}}
+{{- define "audit-ms.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "accreditamento-ms.fullname" -}}
+{{- define "audit-ms.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "accreditamento-ms.chart" -}}
+{{- define "audit-ms.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "accreditamento-ms.labels" -}}
-helm.sh/chart: {{ include "accreditamento-ms.chart" . }}
-{{ include "accreditamento-ms.selectorLabels" . }}
+{{- define "audit-ms.labels" -}}
+helm.sh/chart: {{ include "audit-ms.chart" . }}
+{{ include "audit-ms.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,17 +45,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "accreditamento-ms.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "accreditamento-ms.name" . }}
+{{- define "audit-ms.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "audit-ms.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "accreditamento-ms.serviceAccountName" -}}
+{{- define "audit-ms.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "accreditamento-ms.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "audit-ms.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
