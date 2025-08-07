@@ -1,0 +1,26 @@
+kubernetesClusterDomain: cluster.local
+image:
+  repository: nexus-repo:30022/arpal-audit-fe-k8s-image
+  tag: "1.0"
+imagePullPolicy: Always
+resources:
+  limits:
+    cpu: 1000m
+    memory: 512Mi
+  requests:
+    cpu: 500m
+    memory: 256Mi
+svcClusterIP:
+  ports:
+  - name: http
+    port: 8080
+    protocol: TCP
+    targetPort: 80
+svcNodePort:
+  ports:
+  - name: http
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+    nodePort: 31000
+replicas: 1

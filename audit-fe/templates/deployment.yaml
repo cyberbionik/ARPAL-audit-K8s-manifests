@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: audit-fe
+  labels:
+    app: audit-fe
+  {{- include "audit-fe.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: audit-fe
+    {{- include "audit-fe.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: audit-fe
+      {{- include "audit-fe.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - env:
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag
+          | default .Chart.AppVersion }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        name: audit-fe
+        ports:
+        - containerPort: 80
+        resources: {{- toYaml .Values.resources | nindent 10
+          }}
+        volumeMounts:
+        - mountPath: /etc/nginx/nginx.conf
+          name: nginx-volume
+          subPath: nginx.conf
+      volumes:
+      - configMap:
+          name: arpal-nginx-configmap
+        name: nginx-volume
