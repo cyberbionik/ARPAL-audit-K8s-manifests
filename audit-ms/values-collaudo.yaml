@@ -6,3 +6,5 @@ ports:
     port: 8080         # Porta esposta dal container
     targetPort: 8080   # Porta interna del pod
     nodePort: 30095    # Porta esposta dal nodo
+
+
