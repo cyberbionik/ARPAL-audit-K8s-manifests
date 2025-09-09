@@ -1,5 +1,5 @@
 image:
-  tag: 24 
+  tag: 25 
 replicas: 1
 ports:
   - name: http
